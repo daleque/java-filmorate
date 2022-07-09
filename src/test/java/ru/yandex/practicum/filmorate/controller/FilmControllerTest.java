@@ -19,7 +19,7 @@ class FilmControllerTest {
 
     @Test
     void shouldCreateAndFindAll() {
-        List<Film> films = filmController.findAll();
+        List<Film> films = filmController.getAll();
 
         assertTrue(films.isEmpty());
 
