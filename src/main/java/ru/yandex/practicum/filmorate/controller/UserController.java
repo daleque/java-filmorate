@@ -15,7 +15,7 @@ public class UserController {
     private List<User> users = new ArrayList<>();
 
     @GetMapping("/users")
-    public List<User> findAll() {
+    public List<User> getAllUsers() {
         return users;
     }
 

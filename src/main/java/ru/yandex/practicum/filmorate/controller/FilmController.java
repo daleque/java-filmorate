@@ -14,8 +14,7 @@ public class FilmController {
     private List<Film> films = new ArrayList<>();
 
     @GetMapping("/films")
-    public List<Film> getAll() {
-
+    public List<Film> getAllFilms() {
         return films;
     }
 

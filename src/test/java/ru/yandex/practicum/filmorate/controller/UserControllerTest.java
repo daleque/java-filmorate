@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +13,7 @@ class UserControllerTest {
 
     @Test
     void shouldCreateAndFindAll() {
-        List<User> users = userController.findAll();
+        List<User> users = userController.getAllUsers();
 
         assertTrue(users.isEmpty());
 

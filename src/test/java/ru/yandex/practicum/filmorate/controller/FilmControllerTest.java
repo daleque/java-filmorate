@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +16,12 @@ class FilmControllerTest {
 
     FilmController filmController = new FilmController();
 
+    FilmControllerTest() throws IOException {
+    }
+
     @Test
     void shouldCreateAndFindAll() {
-        List<Film> films = filmController.getAll();
+        List<Film> films = filmController.getAllFilms();
 
         assertTrue(films.isEmpty());
 
