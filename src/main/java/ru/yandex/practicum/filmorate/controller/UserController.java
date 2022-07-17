@@ -1,63 +1,79 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@Slf4j
 public class UserController {
-
-    private List<User> users = new ArrayList<>();
+    private Map<Integer, User> users = new HashMap<>();
+    int usersID = 0;
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return users;
+        List<User> listOfUsers = new ArrayList<>();
+        for(User user : users.values()) {
+            listOfUsers.add(user);
+        }
+        return listOfUsers;
     }
 
-    @PostMapping(value = "/user")
-    public User create(@RequestBody User user) {
-        log.info("Получен запрос к эндпоинту user, метод POST");
-
-        try {
-            users.add(user);
-            if (!(user.getUserEmail().contains("@"))) {
-                throw new ValidationException("Email is not correct");
-            } else if ((user.getUserLogin().equals("")) || (user.getUserLogin().contains(" "))) {
-                throw new ValidationException("UserLogin can not be empty or contain white space!");
-            } else if (user.getUserName().isEmpty()) {
-                user.setUserName(user.getUserLogin());
-            } else if (user.getUserBirthday().isAfter(LocalDate.now())) {
-                throw new ValidationException("Date of birth can not be later than today's date");
-            }
-        } catch (ValidationException e) {
-            throw new RuntimeException(e);
+    @PostMapping("/users")
+    public User createUser (@RequestBody User user) {
+        log.info("Получен запрос к эндпоинту users, метод POST");
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
+        validateUser(user);
+        user.setId(++usersID);
+        saveUser(user);
+
         return user;
     }
 
-    @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId, @RequestBody User user)    {
-        log.info("Получен запрос к эндпоинту" + userId + ", метод PUT");
+    @PutMapping("/users")
+    public void updateUser(@RequestBody User user) {
+        log.info("Получен запрос к эндпоинту users, метод PUT");
 
-        try {
-            users.add(user);
-            if (!(user.getUserEmail().contains("@"))) {
-                throw new ValidationException("Email is not correct");
-            } else if ((user.getUserLogin().equals("")) || (user.getUserLogin().contains(" "))) {
-                throw new ValidationException("UserLogin can not be empty or contain white space!");
-            } else if (user.getUserName().isEmpty()) {
-                user.setUserName(user.getUserLogin());
-            } else if (user.getUserBirthday().isAfter(LocalDate.now())) {
-                throw new ValidationException("Date of birth can not be later than today's date");
-            }
-        } catch (ValidationException e) {
-            throw new RuntimeException(e);
-        }
-        return user;
+        validateUser(user);
+        saveUser(user);
+
     }
+
+    private void validateUser (User user) {
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new  RuntimeException("Invalid birthday");
+        }
+        if (!(user.getEmail().contains("@"))) {
+            throw new  RuntimeException("Invalid e-mail");
+        }
+        if (user.getEmail().isEmpty()) {
+            throw new  RuntimeException("Invalid e-mail");
+        }
+        if (user.getEmail().isBlank()) {
+            throw new  RuntimeException("Invalid e-mail");
+        }
+        if (user.getLogin().isEmpty()) {
+            throw new  RuntimeException("Invalid login");
+        }
+        if (user.getLogin().isBlank()) {
+            throw new  RuntimeException("Invalid login");
+        }
+        if (user.getLogin().contains(" ")) {
+            throw new  RuntimeException("Invalid login");
+        }
+    }
+
+    private void saveUser (User user) {
+        users.put(user.getId(), user);
+    }
+
 }

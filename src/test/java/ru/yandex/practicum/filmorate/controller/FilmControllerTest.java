@@ -1,46 +1,43 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 class FilmControllerTest {
 
     FilmController filmController = new FilmController();
 
-    FilmControllerTest() throws IOException {
-    }
-
-    @Test
+   @Test
     void shouldCreateAndFindAll() {
-        List<Film> films = filmController.getAllFilms();
+        Map<Integer, Film> films = filmController.getAllFilms();
 
         assertTrue(films.isEmpty());
 
-        Film film1 = new Film(1L,
+        Film film1 = new Film(
                 "FilmName1",
                 "Film1 description",
                 LocalDate.of(2000, 3, 12),
-                Duration.between(LocalTime.of(10, 10), LocalTime.of(12, 12))
+                3
                 );
-        Film film2 = new Film(2L,
+        Film film2 = new Film(
                 "FilmName2",
                 "Film2 description",
                 LocalDate.of(2003, 5, 10),
-                Duration.between(LocalTime.of(13, 30), LocalTime.of(17, 50))
+                4
         );
 
-        filmController.create(film1);
-        filmController.create(film2);
+        filmController.createFilm(film1);
+        filmController.createFilm(film2);
 
         assertEquals(2, films.size());
     }
+
 }
