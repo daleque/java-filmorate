@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -11,23 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
+@RequestMapping("/users")
 public class UserController {
-    private Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     int usersID = 0;
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/users")
+    @GetMapping
     public List<User> getAllUsers() {
-        List<User> listOfUsers = new ArrayList<>();
-        for(User user : users.values()) {
-            listOfUsers.add(user);
-        }
-        return listOfUsers;
+        return new ArrayList<>(users.values());
     }
 
-    @PostMapping("/users")
-    public User createUser (@RequestBody User user) {
+    @PostMapping
+    public User createUser(@RequestBody User user) {
         log.info("Получен запрос к эндпоинту users, метод POST");
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -39,41 +37,46 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users")
-    public void updateUser(@RequestBody User user) {
+    @PutMapping
+    public User updateUser(@RequestBody User user) {
         log.info("Получен запрос к эндпоинту users, метод PUT");
+
+        if (!users.containsKey(user.getId())) {
+            String errorMsg = String.format("Отсутствует пользователь с id=%s", user.getId());
+            log.error(errorMsg);
+            throw new NotFoundException(errorMsg);
+        }
 
         validateUser(user);
         saveUser(user);
-
+        return user;
     }
 
-    private void validateUser (User user) {
+    private void validateUser(User user) {
         if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new  RuntimeException("Invalid birthday");
+            throw new ValidationException("Invalid birthday");
         }
         if (!(user.getEmail().contains("@"))) {
-            throw new  RuntimeException("Invalid e-mail");
+            throw new ValidationException("Invalid e-mail");
         }
         if (user.getEmail().isEmpty()) {
-            throw new  RuntimeException("Invalid e-mail");
+            throw new ValidationException("Invalid e-mail");
         }
         if (user.getEmail().isBlank()) {
-            throw new  RuntimeException("Invalid e-mail");
+            throw new ValidationException("Invalid e-mail");
         }
         if (user.getLogin().isEmpty()) {
-            throw new  RuntimeException("Invalid login");
+            throw new ValidationException("Invalid login");
         }
         if (user.getLogin().isBlank()) {
-            throw new  RuntimeException("Invalid login");
+            throw new RuntimeException("Invalid login");
         }
         if (user.getLogin().contains(" ")) {
-            throw new  RuntimeException("Invalid login");
+            throw new ValidationException("Invalid login");
         }
     }
 
-    private void saveUser (User user) {
+    private void saveUser(User user) {
         users.put(user.getId(), user);
     }
-
 }
