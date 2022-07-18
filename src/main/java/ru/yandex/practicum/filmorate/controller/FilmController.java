@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос к эндпоинту films, метод POST");
 
         validateFilm(film);
@@ -35,7 +36,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateUser(@RequestBody Film film) {
+    public Film updateUser(@Valid @RequestBody Film film) {
         log.info("Получен запрос к эндпоинту films, метод PUT");
 
         if (!films.containsKey(film.getId())) {
@@ -53,7 +54,7 @@ public class FilmController {
         films.put(film.getId(), film);
     }
 
-    private void validateFilm(Film film) {
+     void validateFilm(Film film) {
         if (film.getName().isEmpty()) {
             throw new ValidationException("Invalid film name");
         }

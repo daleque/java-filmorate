@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         log.info("Получен запрос к эндпоинту users, метод POST");
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         log.info("Получен запрос к эндпоинту users, метод PUT");
 
         if (!users.containsKey(user.getId())) {
@@ -52,7 +53,7 @@ public class UserController {
         return user;
     }
 
-    private void validateUser(User user) {
+    void validateUser(User user) {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Invalid birthday");
         }
