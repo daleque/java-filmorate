@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
@@ -36,6 +37,8 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(int count) {
-        return inMemoryFilmStorage.getCountPopularFilms(count);
+        return inMemoryFilmStorage.getAllFilms().stream().sorted((p0, p1) ->
+                        p1.getLikes().size() - (p0.getLikes().size())).
+                limit(count).collect(Collectors.toList());
     }
 }
