@@ -2,13 +2,12 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -42,11 +41,11 @@ public class UserService {
         return inMemoryUserStorage.updateUser(user);
     }
 
-    public HashSet<User> getAllFriendsOfUser(int userId) {
+    public Set<User> getAllFriendsOfUser(int userId) {
         return inMemoryUserStorage.getAllFriendsOfUser(userId);
     }
 
-    public HashSet<User> getCommonFriends(int userId, int otherId) {
+    public Set<User> getCommonFriends(int userId, int otherId) {
         return inMemoryUserStorage.getCommonFriends(userId, otherId);
     }
 }

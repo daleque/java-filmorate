@@ -61,7 +61,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("Invalid film duration");
         }
     }
-
+    @Override
     public void likeFilm(int filmId, int userId) {
         if(!(films.containsKey(filmId))) {
             String errorMsg = String.format("Отсутствует фильм с id=%s", filmId);
@@ -73,7 +73,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setLikes(userId);
     }
 
-
+    @Override
     public void deleteLike(int filmId, int userId) {
         if(!(films.containsKey(filmId))) {
             String errorMsg = String.format("Отсутствует фильм с id=%s", filmId);
@@ -96,7 +96,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         Film film = films.get(filmId);
         film.deleteLikesFromUsers(userId);
     }
-
+    @Override
     public Film get(int filmId) {
         if(!(films.containsKey(filmId))) {
             String errorMsg = String.format("Отсутствует фильм с id=%s", filmId);

@@ -80,6 +80,7 @@ public class InMemoryUserStorage implements UserStorage {
         users.put(user.getId(), user);
     }
 
+    @Override
     public void addFriend(int userID, int friendID) {
         if(!(users.containsKey(userID))) {
             String errorMsg = String.format("Отсутствует пользователь с id=%s", userID);
@@ -100,6 +101,7 @@ public class InMemoryUserStorage implements UserStorage {
         friend.addFriendOfUser(userID);
     }
 
+    @Override
     public void deleteFriend(int userID, int friendID) {
         if(!(users.containsKey(userID))) {
             String errorMsg = String.format("Отсутствует пользователь с id=%s", userID);
@@ -112,6 +114,7 @@ public class InMemoryUserStorage implements UserStorage {
         friend.deleteFriendOfUser(userID);
     }
 
+    @Override
     public HashSet<User> getAllFriendsOfUser(int userID) {
         if(!(users.containsKey(userID))) {
             String errorMsg = String.format("Отсутствует пользователь с id=%s", userID);
@@ -133,6 +136,7 @@ public class InMemoryUserStorage implements UserStorage {
         return friends;
     }
 
+    @Override
     public HashSet<User> getCommonFriends(int userID, int otherID) {
         if(!(users.containsKey(userID))) {
             String errorMsg = String.format("Отсутствует пользователь с id=%s", userID);
@@ -169,7 +173,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
         return commonFriends;
     }
-
+    @Override
     public User getUser(int userId) {
         if(!(users.containsKey(userId))) {
             String errorMsg = String.format("Отсутствует пользователь с id=%s", userId);

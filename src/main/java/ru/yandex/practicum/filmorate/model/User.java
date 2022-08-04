@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class User {
     String login;
     String name;
     LocalDate birthday;
-    HashSet<Integer> friendOfUser = new HashSet<>();
+    Set<Integer> friendOfUser = new HashSet<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
