@@ -110,4 +110,15 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         return films.get(filmId);
     }
+
+    @Override
+    public void deleteFilm (int filmID) {
+        if (!(films.containsKey(filmID))) {
+            String errorMsg = String.format("Отсутствует фильм с id=%s", filmID);
+            log.error(errorMsg);
+            throw new NotFoundException(errorMsg);
+        }
+
+        films.remove(filmID, films.get(filmID));
+    }
 }

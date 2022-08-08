@@ -128,7 +128,7 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException(errorMsg);
         }
 
-        HashSet<Integer> friendsID = user.getFriendOfUser();
+        Set<Integer> friendsID = user.getFriendOfUser();
         HashSet<User> friends = new HashSet<>();
         for(Integer friendID : friendsID) {
             friends.add(users.get(friendID));
@@ -151,8 +151,8 @@ public class InMemoryUserStorage implements UserStorage {
         User user1 = users.get(userID);
         User user2 = users.get(otherID);
 
-        HashSet<Integer> user1FriendsID = user1.getFriendOfUser();
-        HashSet<Integer> user2FriendsID = user2.getFriendOfUser();
+        Set<Integer> user1FriendsID = user1.getFriendOfUser();
+        Set<Integer> user2FriendsID = user2.getFriendOfUser();
 
         HashSet<User> user1Friends = new HashSet<>();
         for(Integer friendID : user1FriendsID) {
@@ -182,6 +182,16 @@ public class InMemoryUserStorage implements UserStorage {
         }
         User user = users.get(userId);
         return user;
+    }
+
+    @Override
+    public void deleteUser(int userId) {
+        if(!(users.containsKey(userId))) {
+            String errorMsg = String.format("Отсутствует пользователь с id=%s", userId);
+            log.error(errorMsg);
+            throw new NotFoundException(errorMsg);
+        }
+        users.remove(userId, users.get(userId));
     }
 
 }

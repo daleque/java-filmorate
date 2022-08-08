@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -59,13 +60,18 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}/friends")
-	public HashSet<User> getAllFriendsOfUser(@PathVariable int userId) {
+	public Set<User> getAllFriendsOfUser(@PathVariable int userId) {
 		return userService.getAllFriendsOfUser(userId);
 	}
 
 	@GetMapping ("/{userId}/friends/common/{otherId}")
-	public HashSet<User> getCommonFriends(@PathVariable int userId, @PathVariable int otherId) {
+	public Set<User> getCommonFriends(@PathVariable int userId, @PathVariable int otherId) {
 		return userService.getCommonFriends(userId, otherId);
+	}
+
+	@DeleteMapping("/{userId}")
+	public void deleteUser(@PathVariable int userId) {
+		userService.deleteUser(userId);
 	}
 
 }
