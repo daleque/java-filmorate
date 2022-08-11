@@ -30,6 +30,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public @ResponseBody String handleErrors() {
         return "error";
     }
