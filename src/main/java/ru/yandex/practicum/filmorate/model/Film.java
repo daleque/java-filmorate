@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
@@ -31,6 +32,9 @@ public class Film {
 
     @Min(1)
     private long duration;
+
+    private ArrayList<Genre> genres = new ArrayList<>();
+    private MPARate mpaRate;
 
     int rate;
     HashSet<Integer> likes = new HashSet<>();

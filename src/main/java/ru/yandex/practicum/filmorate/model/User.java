@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class User {
     String login;
     String name;
     LocalDate birthday;
-    Set<Integer> friendOfUser = new HashSet<>();
+    HashMap<Integer, Boolean> friendOfUser = new HashMap<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
@@ -34,12 +35,12 @@ public class User {
         this.birthday = birthday;
     }
 
-    public void addFriendOfUser(Integer friendID) {
-        friendOfUser.add(friendID);
+    public void addFriendOfUser(Integer friendID, Boolean isMutually) {
+        friendOfUser.put(friendID, isMutually);
     }
 
     public void deleteFriendOfUser(Integer friendID) {
-        if (!(friendOfUser.contains(friendID))) {
+        if (!(friendOfUser.containsKey(friendID))) {
             String errorMsg = String.format("Отсутствует друг с id=%s", friendID);
             throw new NotFoundException(errorMsg);
         }

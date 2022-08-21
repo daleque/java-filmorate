@@ -97,8 +97,8 @@ public class InMemoryUserStorage implements UserStorage {
         User user = users.get(userID);
         User friend = users.get(friendID);
 
-        user.addFriendOfUser(friendID);
-        friend.addFriendOfUser(userID);
+        user.addFriendOfUser(friendID, false);
+        friend.addFriendOfUser(userID, false);
     }
 
     @Override
@@ -128,9 +128,9 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException(errorMsg);
         }
 
-        Set<Integer> friendsID = user.getFriendOfUser();
+        HashMap<Integer, Boolean> friendsID = user.getFriendOfUser();
         HashSet<User> friends = new HashSet<>();
-        for(Integer friendID : friendsID) {
+        for(Integer friendID : friendsID.keySet()) {
             friends.add(users.get(friendID));
         }
         return friends;
@@ -151,15 +151,15 @@ public class InMemoryUserStorage implements UserStorage {
         User user1 = users.get(userID);
         User user2 = users.get(otherID);
 
-        Set<Integer> user1FriendsID = user1.getFriendOfUser();
-        Set<Integer> user2FriendsID = user2.getFriendOfUser();
+        HashMap<Integer, Boolean> user1FriendsID = user1.getFriendOfUser();
+        HashMap<Integer, Boolean> user2FriendsID = user2.getFriendOfUser();
 
         HashSet<User> user1Friends = new HashSet<>();
-        for(Integer friendID : user1FriendsID) {
+        for(Integer friendID : user1FriendsID.keySet()) {
             user1Friends.add(users.get(friendID));
         }
         HashSet<User> user2Friends = new HashSet<>();
-        for(Integer friendID : user2FriendsID) {
+        for(Integer friendID : user2FriendsID.keySet()) {
             user2Friends.add(users.get(friendID));
         }
 
