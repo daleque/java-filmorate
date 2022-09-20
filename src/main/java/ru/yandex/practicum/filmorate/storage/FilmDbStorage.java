@@ -1,10 +1,13 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,8 +16,10 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Primary
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final GenreDbStorage genreDbStorage;
 
     @Override
     public List<Film> getAllFilms() {
@@ -60,15 +65,18 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         Film film = new Film(
-                resultSet.getLong("FILM_ID"),
+                resultSet.getInt("FILM_ID"),
                 resultSet.getString("FILM_NAME"),
                 resultSet.getString("DESCRIPTION"),
                 resultSet.getDate("RELEASE_DATE").toLocalDate(),
                 resultSet.getInt("DURATION"),
-                resultSet.getString("MPA_NAME"),
+                new Mpa(
+                        resultSet.getInt("MPA_ID"),
+                        resultSet.getString("MPA_NAME")
+                ),
                 new LinkedHashSet<>()
         );
-        film.setGenres(genreStorage.loadFilmGenre(film));
+        film.setGenres(genreDbStorage.loadFilmGenre(film));
         return film;
     }
 }
