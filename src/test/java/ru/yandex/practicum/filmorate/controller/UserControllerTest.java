@@ -15,16 +15,16 @@ class UserControllerTest {
     /*@Test
     void validateUserWithoutEmail() {
         UserController userController = new UserController();
-        User user = new User(null,
+        User user = new User("era@mail.com",
                 "Login",
                 "Name",
                 LocalDate.of(1999, 1, 13));
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            userController.validateUser(user);
-        });
+        userController.createUser(user);
+
+
     }
 
-    @Test
+    /*@Test
     void validateUserWithBlankEmail() {
         UserController userController = new UserController();
         User user = new User("     ",
