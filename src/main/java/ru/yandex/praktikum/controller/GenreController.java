@@ -1,12 +1,13 @@
 package ru.yandex.praktikum.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.praktikum.model.Genre;
 import ru.yandex.praktikum.service.GenreService;
+
+import java.util.List;
 
 @Slf4j
 @RestController
