@@ -22,7 +22,7 @@ import ru.yandex.praktikum.utils.LocalDateAdapter;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+/*@SpringBootTest
 @AutoConfigureMockMvc
 class GenreControllerTest {
     private Genre genre;
@@ -94,4 +94,4 @@ class GenreControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-}
+}*/
