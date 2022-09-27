@@ -20,7 +20,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findById(Long id) {
-        final String sqlQuery = "SELECT USER_ID, USER_NAME, LOGIN, EMAIL, BIRTHDAY FROM USERS WHERE USER_ID = ?";
+        final String sqlQuery = "SELECT user_id, user_name, login, email, birthday FROM users WHERE user_id = ?";
         if (id < 1) {
             throw new NotFoundException(String.format("User with id=%d not found!", id));
         }
@@ -29,28 +29,28 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        final String sqlQuery = "SELECT USER_ID, USER_NAME, LOGIN, EMAIL, BIRTHDAY FROM USERS";
+        final String sqlQuery = "SELECT user_id, user_name, login, email, birthday FROM users";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
 
     @Override
     public List<User> findAllFriends(Long id) {
-        final String sqlQuery = "SELECT U.* FROM USERS U JOIN FRIENDS F on U.USER_ID = F.FRIEND_ID WHERE F.USER_ID = ?";
+        final String sqlQuery = "SELECT u.* FROM users u JOIN friends f on u.user_id = f.friend_id WHERE f.user_id = ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, id);
     }
 
     @Override
     public List<User> findCommonFriends(Long id, Long otherId) {
         final String sqlQuery =
-                "SELECT U.* FROM USERS U" +
-                        " JOIN FRIENDS F on U.USER_ID = F.FRIEND_ID" +
-                        " JOIN FRIENDS F2 on U.USER_ID = F2.FRIEND_ID WHERE F.USER_ID = ? AND F2.USER_ID = ?";
+                "SELECT u.* FROM users u" +
+                        " JOIN friends f on u.user_id = f.friend_id" +
+                        " JOIN friends f2 on u.user_id = f2.friend_id WHERE f.user_id = ? AND f2.user_id = ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser, id, otherId);
     }
 
     @Override
     public User save(User user) {
-        final String sqlQuery = "INSERT INTO USERS(USER_NAME, LOGIN, EMAIL, BIRTHDAY) VALUES (?, ?, ?, ?)";
+        final String sqlQuery = "INSERT INTO users(user_name, login, email, birthday) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"USER_ID"});
@@ -66,7 +66,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        final String sqlQuery = "UPDATE USERS SET USER_NAME = ?, LOGIN = ?, EMAIL = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+        final String sqlQuery = "UPDATE users SET user_name = ?, login = ?, email = ?, birthday = ? WHERE user_id = ?";
         jdbcTemplate.update(sqlQuery
                 , user.getName()
                 , user.getLogin()
@@ -78,29 +78,17 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteById(Long id) {
-        final String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
+        final String sqlQuery = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sqlQuery, id);
-    }
-
-    @Override
-    public void addFriend(Long id, Long friendId) {
-        final String sqlQuery = "INSERT INTO FRIENDS(USER_ID, FRIEND_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, id, friendId);
-    }
-
-    @Override
-    public void deleteFriend(Long id, Long friendId) {
-        final String sqlQuery = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
-        jdbcTemplate.update(sqlQuery, id, friendId);
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         return new User(
-                resultSet.getLong("USER_ID"),
-                resultSet.getString("USER_NAME"),
-                resultSet.getString("LOGIN"),
-                resultSet.getString("EMAIL"),
-                resultSet.getDate("BIRTHDAY").toLocalDate()
+                resultSet.getLong("user_id"),
+                resultSet.getString("user_name"),
+                resultSet.getString("login"),
+                resultSet.getString("email"),
+                resultSet.getDate("birthday").toLocalDate()
         );
     }
 }

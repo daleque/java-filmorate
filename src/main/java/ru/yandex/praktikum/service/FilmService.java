@@ -5,6 +5,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.praktikum.dao.film.FilmStorage;
+import ru.yandex.praktikum.dao.like.LikeStorage;
 import ru.yandex.praktikum.exception.NotFoundException;
 import ru.yandex.praktikum.model.Film;
 import ru.yandex.praktikum.model.User;
@@ -14,6 +15,7 @@ import ru.yandex.praktikum.model.User;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
+    private final LikeStorage likeStorage;
 
     public Film getFilm(Long id) {
         final Film film = filmStorage.findById(id);
@@ -64,7 +66,7 @@ public class FilmService {
         if (Objects.isNull(user)) {
             throw new NotFoundException(String.format("User with id=%d not found!", userId));
         }
-        filmStorage.addLike(id, userId);
+        likeStorage.addLike(id, userId);
     }
 
     public void deleteLike(Long id, Long userId) {
@@ -77,6 +79,6 @@ public class FilmService {
         if (Objects.isNull(user)) {
             throw new NotFoundException(String.format("User with id=%d not found!", userId));
         }
-        filmStorage.deleteLike(id, userId);
+        likeStorage.deleteLike(id, userId);
     }
 }

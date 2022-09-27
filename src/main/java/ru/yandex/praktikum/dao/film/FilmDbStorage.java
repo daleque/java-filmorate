@@ -25,9 +25,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film findById(Long id) {
         final String sqlQuery =
-                "SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, M.MPA_ID, M.MPA_NAME FROM FILMS" +
-                        " JOIN MPA M ON M.MPA_ID = FILMS.MPA_ID " +
-                        "WHERE FILM_ID = ?";
+                " SELECT film_id, film_name, description, release_date, duration, m.mpa_id, m.mpa_name FROM films" +
+                        " JOIN mpa m ON m.mpa_id = films.mpa_id" +
+                        " WHERE film_id = ?";
         if (id < 1) {
             throw new NotFoundException(String.format("Film with id=%d not found!", id));
         }
@@ -37,24 +37,24 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> findAll() {
         final String sqlQuery =
-                "SELECT FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, M.MPA_ID, M.MPA_NAME FROM FILMS" +
-                        " JOIN MPA M ON M.MPA_ID = FILMS.MPA_ID";
+                " SELECT film_id, film_name, description, release_date, duration, m.mpa_id, m.mpa_name FROM films" +
+                        " JOIN mpa m ON m.mpa_id = films.mpa_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
     @Override
     public List<Film> findPopularFilms(Integer count) {
         final String sqlQuery =
-                "SELECT FILMS.FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, M.MPA_ID, M.MPA_NAME FROM FILMS" +
-                        " JOIN MPA M ON M.MPA_ID = FILMS.MPA_ID " +
-                        "LEFT JOIN LIKES AS L ON FILMS.FILM_ID = L.FILM_ID" +
-                        " GROUP BY FILMS.FILM_ID ORDER BY COUNT(L.USER_ID) DESC LIMIT ?";
+                " SELECT films.film_id, film_name, description, release_date, duration, m.mpa_id, m.mpa_name FROM films" +
+                        " JOIN mpa m ON m.mpa_id = films.mpa_id" +
+                        " LEFT JOIN likes AS l ON films.film_id = l.film_id" +
+                        " GROUP BY films.film_id ORDER BY COUNT(l.user_id) DESC LIMIT ?";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
     }
 
     @Override
     public Film save(Film film) {
-        final String sqlQuery = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)";
+        final String sqlQuery = "INSERT INTO films(film_name, description, release_date, duration, mpa_id) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"FILM_ID"});
@@ -73,8 +73,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         final String sqlQuery =
-                "UPDATE FILMS SET FILM_NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?" +
-                        " WHERE FILM_ID = ?";
+                "UPDATE films SET film_name = ?, description = ?, release_date = ?, duration = ?, mpa_id = ?" +
+                        " WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery
                 , film.getName()
                 , film.getDescription()
@@ -89,32 +89,20 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteById(Long id) {
-        final String sqlQuery = "DELETE FROM FILMS WHERE FILM_ID = ?";
+        final String sqlQuery = "DELETE FROM films WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery, id);
-    }
-
-    @Override
-    public void addLike(Long id, Long userId) {
-        final String sqlQuery = "INSERT INTO LIKES(FILM_ID, USER_ID) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, id, userId);
-    }
-
-    @Override
-    public void deleteLike(Long id, Long userId) {
-        final String sqlQuery = "DELETE FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
-        jdbcTemplate.update(sqlQuery, id, userId);
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         Film film = new Film(
-                resultSet.getLong("FILM_ID"),
-                resultSet.getString("FILM_NAME"),
-                resultSet.getString("DESCRIPTION"),
-                resultSet.getDate("RELEASE_DATE").toLocalDate(),
-                resultSet.getInt("DURATION"),
+                resultSet.getLong("film_id"),
+                resultSet.getString("film_name"),
+                resultSet.getString("description"),
+                resultSet.getDate("release_date").toLocalDate(),
+                resultSet.getInt("duration"),
                 new Mpa(
-                        resultSet.getLong("MPA_ID"),
-                        resultSet.getString("MPA_NAME")
+                        resultSet.getLong("mpa_id"),
+                        resultSet.getString("mpa_name")
                 ),
                 new LinkedHashSet<>()
         );

@@ -20,7 +20,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre findById(Long id) {
-        final String sqlQuery = "SELECT GENRE_ID, GENRE_NAME FROM GENRES WHERE GENRE_ID = ?";
+        final String sqlQuery = "SELECT genre_id, genre_name FROM genres WHERE genre_id = ?";
         if (id < 1) {
             throw new NotFoundException(String.format("Genre with id=%d not found!", id));
         }
@@ -29,13 +29,13 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> findAll() {
-        final String sqlQuery = "SELECT GENRE_ID, GENRE_NAME FROM GENRES";
+        final String sqlQuery = "SELECT genre_id, genre_name FROM genres";
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
 
     @Override
     public Genre save(Genre genre) {
-        final String sqlQuery = "INSERT INTO GENRES(GENRE_NAME) VALUES (?)";
+        final String sqlQuery = "INSERT INTO genres(genre_name) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"GENRE_ID"});
@@ -47,7 +47,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre update(Genre genre) {
-        final String sqlQuery = "UPDATE GENRES SET GENRE_NAME = ? WHERE GENRE_ID = ?";
+        final String sqlQuery = "UPDATE genres SET genre_name = ? WHERE genre_id = ?";
         jdbcTemplate.update(sqlQuery
                 , genre.getName()
                 , genre.getId());
@@ -56,7 +56,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void deleteById(Long id) {
-        final String sqlQuery = "DELETE FROM GENRES WHERE GENRE_ID = ?";
+        final String sqlQuery = "DELETE FROM genres WHERE genre_id = ?";
         jdbcTemplate.update(sqlQuery, id);
     }
 
@@ -68,10 +68,10 @@ public class GenreDbStorage implements GenreStorage {
         if (film.getGenres().isEmpty()) {
             film.setGenres(new LinkedHashSet<>());
         }
-        final String sqlDelete = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
+        final String sqlDelete = "DELETE FROM films_genres WHERE film_id = ?";
         jdbcTemplate.update(sqlDelete, film.getId());
 
-        final String sqlInsert = "INSERT INTO FILMS_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
+        final String sqlInsert = "INSERT INTO films_genres (film_id, genre_id) VALUES (?, ?)";
         for (Genre genre : film.getGenres()) {
             jdbcTemplate.update(sqlInsert, film.getId(), genre.getId());
         }
@@ -80,15 +80,15 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public Set<Genre> loadFilmGenre(Film film) {
         final String sqlQuery =
-                "SELECT GENRES.GENRE_ID, GENRE_NAME FROM GENRES" +
-                        " JOIN FILMS_GENRES FG ON GENRES.GENRE_ID = FG.GENRE_ID WHERE FILM_ID = ?";
+                "SELECT genres.genre_id, genre_name FROM genres" +
+                        " JOIN films_genres fg ON genres.genre_id = fg.genre_id WHERE film_id = ?";
         return new LinkedHashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToGenre, film.getId()));
     }
 
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return new Genre(
-                resultSet.getLong("GENRE_ID"),
-                resultSet.getString("GENRE_NAME")
+                resultSet.getLong("genre_id"),
+                resultSet.getString("genre_name")
         );
     }
 }

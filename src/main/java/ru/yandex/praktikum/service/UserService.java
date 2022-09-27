@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.praktikum.dao.friend.FriendStorage;
 import ru.yandex.praktikum.dao.user.UserStorage;
 import ru.yandex.praktikum.exception.NotFoundException;
 import ru.yandex.praktikum.model.User;
@@ -12,6 +13,7 @@ import ru.yandex.praktikum.model.User;
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     public User getUserById(Long id) {
         final User user = userStorage.findById(id);
@@ -74,7 +76,7 @@ public class UserService {
         if (Objects.isNull(user) || Objects.isNull(friend)) {
             throw new NotFoundException(String.format("Users with id=%d or friendId=%d not found!", id, friendId));
         }
-        userStorage.addFriend(id, friendId);
+        friendStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Long id, Long friendId) {
@@ -84,6 +86,6 @@ public class UserService {
         if (Objects.isNull(user) || Objects.isNull(friend)) {
             throw new NotFoundException(String.format("Users with id=%d or friendId=%d not found!", id, friendId));
         }
-        userStorage.deleteFriend(id, friendId);
+        friendStorage.deleteFriend(id, friendId);
     }
 }

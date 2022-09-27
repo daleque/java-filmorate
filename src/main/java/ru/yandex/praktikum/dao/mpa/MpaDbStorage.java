@@ -19,7 +19,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa findById(Long id) {
-        final String sqlQuery = "SELECT MPA_ID, MPA_NAME FROM MPA WHERE MPA_ID = ?";
+        final String sqlQuery = "SELECT mpa_id, mpa_name FROM mpa WHERE mpa_id = ?";
         if (id < 1) {
             throw new NotFoundException(String.format("Mpa with id=%d not found!", id));
         }
@@ -28,13 +28,13 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public List<Mpa> findAll() {
-        final String sqlQuery = "SELECT MPA_ID, MPA_NAME FROM MPA";
+        final String sqlQuery = "SELECT mpa_id, mpa_name FROM mpa";
         return jdbcTemplate.query(sqlQuery, this::mapRowToMpa);
     }
 
     @Override
     public Mpa save(Mpa mpa) {
-        final String sqlQuery = "INSERT INTO MPA(MPA_NAME) VALUES (?)";
+        final String sqlQuery = "INSERT INTO mpa(mpa_name) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"MPA_ID"});
@@ -46,7 +46,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa update(Mpa mpa) {
-        final String sqlQuery = "UPDATE MPA SET MPA_NAME = ? WHERE MPA_ID = ?";
+        final String sqlQuery = "UPDATE mpa SET mpa_name = ? WHERE mpa_id = ?";
         jdbcTemplate.update(sqlQuery
                 , mpa.getName()
                 , mpa.getId());
@@ -55,14 +55,14 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public void deleteById(Long id) {
-        final String sqlQuery = "DELETE FROM MPA WHERE MPA_ID = ?";
+        final String sqlQuery = "DELETE FROM mpa WHERE mpa_id = ?";
         jdbcTemplate.update(sqlQuery, id);
     }
 
     private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return new Mpa(
-                resultSet.getLong("MPA_ID"),
-                resultSet.getString("MPA_NAME")
+                resultSet.getLong("mpa_id"),
+                resultSet.getString("mpa_name")
         );
     }
 }
